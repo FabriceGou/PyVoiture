@@ -1,0 +1,150 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+<style>
+.input-group-prepend {
+    flex: 0 0 40%;
+}
+.input-group-text {
+    width: 100%;
+}
+</style>
+
+<div id="handsontable-carburant"></div>
+
+<button type="button" class="btn btn-primary" id="btnAjouter">Ajouter</button>
+
+<div id="parentModalForm"/>
+
+<script>
+var htcarburant;
+
+
+function charger_carburant(){
+    voitureId = $('#voiture').val();
+  $.ajax({
+      url: '.{{ url_for("depense_page.list_carburant", voiture_id=999) }}'.replace('999',voitureId),
+      type: 'POST',
+      success: function (data) {
+        if (!isNullOrEmpty(htcarburant)) {
+          htcarburant.loadData(JSON.parse(data));
+          htcarburant.render();
+        } else {
+          creerTableaucarburant(JSON.parse(data))
+        }
+      },
+      error: function (data) {
+          alert("Erreur lors de la mise à jour de la liste")
+      },
+      complete: function () { }
+  });
+}
+
+function getcarburantConfig() {
+    return [
+    { data: 'id', type: 'numeric', readOnly:true },
+    { data: 'voiture_id', type: 'numeric', readOnly:true},
+    { data: 'jour', type: 'date', dateFormat: 'DD/MM/YYYY HH:mm', readOnly:false},
+    { data: 'kilometrage', type: 'numeric', readOnly:true },
+    { data: 'prix_litre', type: 'numeric', readOnly:true},
+    { data: 'total', type: 'numeric', readOnly:true, numericFormat: {pattern: '0.00', culture: 'fr-FR'}},
+    { data: 'anon_1', type: 'numeric', readOnly:true, numericFormat: {pattern: '0.000', culture: 'fr-FR'}},
+    { data: 'litre_100', type: 'numeric', readOnly:true, numericFormat: {pattern: '0.000', culture: 'fr-FR'}},
+    { data: 'description', type: 'text', readOnly:true},
+    { data: 'id', renderer: imgModifierRenderer, readOnly:true},
+    { data: 'id', renderer: imgSupprimerRenderer, readOnly:true}
+  ]
+}
+
+function creerTableaucarburant(jsonData){
+htcarburant = new Handsontable(document.querySelector("#handsontable-carburant"), {
+  //alignement par défaut à droite
+  className: "htRight",
+  data: jsonData,
+  language: 'fr-FR',
+  columns: getcarburantConfig(),
+  rowHeaders: false,
+  //pour avoir les filtres
+  dropdownMenu: true,
+  filters :true,
+  manualColumnMove: true,
+  manualColumnResize: true,
+  contextMenu: true,
+  multiColumnSorting: true,
+  //pour avoir des colonnes qui s'ajustent automatiquement
+  autoColumnSize : true,
+  hiddenColumns: {
+    columns: [0, 1],
+    indicators: false
+  },
+  nestedHeaders: [
+    ['Id', 'Voiture', 'Date', 'Kilometrage', 'Prix au litre', 'Total','Volume', 'Litre/100', 'Commentaires', 'Modifier', 'Supprimer']
+  ],
+  headerTooltips: { rows: false, columns: true, onlyTrimmed: true },
+  licenseKey: 'non-commercial-and-evaluation',
+  afterRemoveRow: function (index, amount) {
+    console.log(amount + " row(s) removed starting line "+ index)
+  },
+  afterCreateRow: function (index, amount) {
+      console.log(amount + " row(s) added starting line "+ index)
+  },
+});
+return htcarburant;
+}
+
+function supprimer(id, row){
+  jour = htcarburant.getDataAtRowProp(row, 'jour');
+  if(confirm('Voulez vous vraiment supprimer le plein du '+jour))  {
+    $.ajax({
+        url: '.{{ url_for("depense_page.supprimer_plein", id=999) }}'.replace('999',id),
+        type: 'POST',
+        success: function (data) {
+          charger_carburant()
+        },
+        error: function (data) {
+          alert("Erreur lors de la suppression")
+        },
+        complete: function () { }
+    });
+  }
+}
+
+function modifier(plein_id, row){
+    chargerForm(plein_id);
+}
+function chargerForm(plein_id) {
+  $.ajax({
+      url: '.{{ url_for("depense_page.show_plein_form") }}',
+      type: 'GET',
+      data:{
+        plein_id: ''+plein_id, voiture_id: $('#voiture').val()
+      },
+      success: function (html) {
+        $('#parentModalForm').html(html);
+        $('#carburantModal').modal();
+      },
+      error: function (data) {
+        alert("Erreur lors de la création du formulaire d'ajout")
+      },
+      complete: function () { }
+  });
+}
+
+$( document ).ready(function() {
+    charger_carburant();
+
+    $('#btnRechercher').click(function() {
+      charger_carburant();
+    });
+
+    $('#btnAjouter').on('click', function (event) {
+      chargerForm(-1);
+    });
+});
+
+</script>
+
+{% endblock %}
+

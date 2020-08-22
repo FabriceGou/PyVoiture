@@ -1,0 +1,93 @@
+
+<div class="modal fade" id="carburantModal" tabindex="-1" role="dialog" aria-labelledby="carburantModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="carburantModalLabel">Ajouter un plein</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-inline" id="add_form" action=".{{ url_for('depense_page.sauver_plein') }}" method="post">
+          <input type="hidden" id="voiture_id" name="voiture_id" value="{{ plein.voiture_id  }}"/>
+          <input type="hidden" id="plein_id" name="plein_id" value="{{ plein.id }}" />
+          <div class="input-group col-12 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text col-12">Date</span>
+            </div>
+            <input type="date" class="form-control" id="jour" name="jour" value="{{ jour }}" required/>
+          </div>
+          <div class="input-group col-12 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Kilométrage</span>
+            </div>
+            <input type="number" class="form-control" id="kilometrage" name="kilometrage" value="{{ plein.kilometrage }}" required/>
+          </div>
+          <div class="input-group col-12 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Prix au litre</span>
+            </div>
+            <input type="number" class="form-control" id="prix_litre" name="prix_litre" value="{{ plein.prix_litre }}" step="0.001" required/>
+          </div>
+          <div class="input-group col-12 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Total</span>
+            </div>
+            <input type="number" class="form-control" id="total" name="total" value="{{ plein.total }}" step="0.001" required/>
+          </div>
+          <div class="input-group col-12 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Commentaire</span>
+            </div>
+            <textarea class="form-control" id="commentaire" name="commentaire">{{ plein.description }}</textarea>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" id="btnEnregistrer">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+$('#btnEnregistrer').on('click', function (event) {
+      event.preventDefault();
+      if ($('#add_form')[0].checkValidity()) {
+          $('#voiture_id').val($('#voiture').val());
+          $('#add_form').submit();
+          $('#btnRechercher').click();
+      } else {
+          $.notify({
+              icon: 'glyphicon glyphicon-warning-sign',
+              message: 'Les champs en rouge sont obligatoires'
+          }, {
+              type: 'warning',
+              delay: 5000
+          });
+      }
+    });
+
+function sauver_carburant(){
+    voitureId = $('#voiture').val();
+  $.ajax({
+      url: '.{{ url_for("depense_page.sauver_plein", voiture_id=999) }}'.replace('999',voitureId),
+      type: 'POST',
+      success: function (data) {
+        if (!isNullOrEmpty(htcarburant)) {
+        } else {
+          creerTableaucarburant(JSON.parse(data))
+        }
+      },
+      error: function (data) {
+          alert("Erreur lors de la mise à jour de la liste")
+      },
+      complete: function () { }
+  });
+}
+
+</script>

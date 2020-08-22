@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+<style>
+.input-group-prepend {
+    flex: 0 0 40%;
+}
+.input-group-text {
+    width: 100%;
+}
+</style>
+
+<div id="handsontable-depense"></div>
+
+<button type="button" class="btn btn-primary" id="btnAjouter">Ajouter</button>
+
+<div id="parentModalForm"/>
+
+<script>
+var htdepense;
+
+function charger_depense(){
+    voitureId = $('#voiture').val();
+  $.ajax({
+      url: '.{{ url_for("list_depense", voiture_id=999) }}'.replace('999',voitureId),
+      type: 'POST',
+      success: function (data) {
+        if (!isNullOrEmpty(htdepense)) {
+          htdepense.loadData(JSON.parse(data));
+          htdepense.render();
+        } else {
+          creerTableaudepense(JSON.parse(data))
+        }
+      },
+      error: function (data) {
+          alert("Erreur lors de la mise à jour de la liste")
+      },
+      complete: function () { }
+  });
+}
+
+function getdepenseConfig() {
+    return [
+    { data: 'id', type: 'numeric', readOnly:true },
+    { data: 'voiture_id', type: 'numeric', readOnly:true},
+    { data: 'jour', type: 'date', dateFormat: 'DD/MM/YYYY HH:mm', readOnly:false},
+    { data: 'categorie_id', type: 'numeric', readOnly:true},
+    { data: 'kilometrage', type: 'numeric', readOnly:true },
+    { data: 'total', type: 'numeric', readOnly:true},
+    { data: 'description', type: 'text', readOnly:true},
+    { data: 'id', renderer: imgModifierRenderer, readOnly:true},
+    { data: 'id', renderer: imgSupprimerRenderer, readOnly:true}
+  ]
+}
+
+function creerTableaudepense(jsonData){
+htdepense = new Handsontable(document.querySelector("#handsontable-depense"), {
+  //alignement par défaut à droite
+  className: "htRight",
+  data: jsonData,
+  columns: getdepenseConfig(),
+  rowHeaders: false,
+  //pour avoir les filtres
+  dropdownMenu: true,
+  filters :true,
+  manualColumnMove: true,
+  manualColumnResize: true,
+  contextMenu: true,
+  multiColumnSorting: true,
+  //pour avoir des colonnes qui s'ajustent automatiquement
+  autoColumnSize : true,
+  hiddenColumns: {
+    columns: [0, 1],
+    indicators: false
+  },
+  nestedHeaders: [
+    ['Id', 'Voiture', 'Date', 'Categorie', 'Kilometrage', 'Total', 'Description', 'Modifier', 'Supprimer']
+  ],
+  headerTooltips: { rows: false, columns: true, onlyTrimmed: true },
+  licenseKey: 'non-commercial-and-evaluation',
+  afterRemoveRow: function (index, amount) {
+    console.log(amount + " row(s) removed starting line "+ index)
+  },
+  afterCreateRow: function (index, amount) {
+      console.log(amount + " row(s) added starting line "+ index)
+  },
+});
+return htdepense;
+}
+
+
+$( document ).ready(function() {
+    charger_depense();
+
+    $('#btnRechercher').click(function() {
+      charger_depense();
+    });
+
+    $('#btnAjouter').on('click', function (event) {
+      chargerForm(-1);
+    });
+});
+
+</script>
+
+{% endblock %}
+

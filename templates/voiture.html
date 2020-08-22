@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+Liste des voitures
+<div id="handsontable-voiture"></div>
+
+<script>
+var htVoiture;
+
+function charger_voiture(){
+  $.ajax({
+      url: '.{{ url_for("list_voiture") }}',
+      type: 'POST',
+      success: function (data) {
+        if (!isNullOrEmpty(htVoiture)) {
+          htVoiture.loadData(JSON.parse(data));
+          htVoiture.render();
+        } else {
+          creerTableauVoiture(JSON.parse(data))
+        }
+      },
+      error: function (data) {
+          alert("Erreur lors de la mise à jour de la liste")
+      },
+      complete: function () { }
+  });
+}
+
+function getVoitureConfig() {
+    return [
+    { data: 'id', type: 'numeric', readOnly:true },
+    { data: 'nom',  type: 'text', readOnly:false},
+    { data: 'description', type: 'text', readOnly:false }
+  ]
+}
+
+
+function creerTableauVoiture(jsonData){
+htVoiture = new Handsontable(document.querySelector("#handsontable-voiture"), {
+  //alignement par défaut à droite
+  className: "htRight",
+  data: jsonData,
+  columns: getVoitureConfig(),
+  rowHeaders: false,
+  //pour avoir les filtres
+  dropdownMenu: true,
+  filters :true,
+  manualColumnMove: true,
+  manualColumnResize: true,
+  contextMenu: true,
+  multiColumnSorting: true,
+  //pour avoir des colonnes qui s'ajustent automatiquement
+  autoColumnSize : true,
+  hiddenColumns: true,
+  nestedHeaders: [
+    ['Id', 'Nom', 'Description']
+  ],
+  headerTooltips: { rows: false, columns: true, onlyTrimmed: true }
+});
+return htVoiture;
+}
+
+$( document ).ready(function() {
+  charger_voiture();
+});
+
+</script>
+
+
+{% endblock %}
+

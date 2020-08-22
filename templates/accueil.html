@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<fieldset style="margin-top:0px;margin-bottom:5px">
+    <form class="form-inline" id="accueilForm" action='#' method="post" style="background-color:lightgray;padding:4px">
+        <label for="dateDeb">Période d'analyse du </label>
+        <input type="date" class="form-control input-group-sm" id="dateDeb" name="dateDeb" required value="{{date_debut}}" style="padding-bottom:0px;padding-top:0px;">
+        <label for="dateFin">au</label>
+        <input type="date" class="form-control" id="dateFin" name="dateFin" required value="{{date_fin}}" style="padding-bottom:0px;padding-top:0px;">
+    </form>
+</fieldset>
+
+<div id="plot_conso_100"></div>
+
+<script>
+function charger_graph_conso() {
+
+  $.ajax({
+      url: '.{{ url_for("charger_graph_conso") }}',
+      type: 'GET',
+      dataType: "json",
+      data:{
+        voiture_id: $('#voiture').val(),
+        date_deb: ''+$('#dateDeb').val(),
+        date_fin: ''+$('#dateFin').val(),
+
+      },
+      success: function (json_graph) {
+        var graphs = json_graph;
+        Plotly.newPlot('plot_conso_100',graphs.data,graphs.layout,{displaylogo: false, displayModeBar: false});
+      },
+      error: function (data) {
+        alert("Erreur lors du chargement du graph des conso")
+      },
+      complete: function () { }
+  });
+}
+
+$(document).ready(function() {
+    charger_graph_conso();
+    $('#btnRechercher').click(function() {
+      charger_graph_conso();
+    });
+});
+</script>
+{% endblock %}
+
