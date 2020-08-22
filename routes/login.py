@@ -22,7 +22,7 @@ def logout_page():
 
 @login_manager.user_loader
 def load_user(user_mail):
-    """Check if user is logged-in on every page load."""
+    """Vérifie si l'utilisateur est loggué à chaque chargement de page"""
     if user_mail is not None:
         user = db.session.query(User).filter(User.email == user_mail).first()
         return user
