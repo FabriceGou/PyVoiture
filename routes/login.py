@@ -1,6 +1,6 @@
 import os
-from flask import redirect, render_template, flash, Blueprint, request, session, url_for
-from flask_login import login_required, logout_user, login_user, current_user
+from flask import redirect, render_template, flash, Blueprint, request, url_for
+from flask_login import login_required, logout_user, login_user
 
 from modules.db.User import User
 # Blueprint Configuration
@@ -32,10 +32,11 @@ def load_user(user_mail):
 @login_manager.unauthorized_handler
 def unauthorized():
     """Redirect unauthorized users to Login page."""
-    flash('You must be logged in to view that page.')
+    flash('Vous devez être identifié pour acceder à cette page.')
     return redirect(url_for('auth_bp.login_page'))
 
-@auth_bp.route('/login', methods=['GET', 'POST'])
+
+@auth_bp.route('/login', methods=['POST', 'GET'])
 def login_page():
     email = request.form.get('email')
     password = request.form.get('password')
@@ -44,17 +45,9 @@ def login_page():
 
     # check if user actually exists
     # take the user supplied password, hash it, and compare it to the hashed password in database
-    if not user or user.password!=password:
-        flash('Please check your login details and try again.')
+    if not user or user.password != password:
+        flash('Vérifier vos information de connexion, puis essayez à nouveau.')
         return render_template('login.html', form=LoginForm())
 
     login_user(user)
-
     return redirect(url_for('home'))
-
-
-
-    return render_template('accueil.html',
-                           title='Flask-Login Tutorial.',
-                           current_user=current_user)
-
