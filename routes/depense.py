@@ -6,14 +6,13 @@ Routes and views for the flask application.
 import datetime
 import json
 import pandas as pd
-import plotly
 from flask import render_template, jsonify, request, Blueprint
 
 from modules.dal.plein import get_plein
 from modules.db import engine
-from modules.db.entities import Plein, Depense
+from modules.db.entities import Plein, Depense, Categorie
 from modules.helper import ViewHelper, DateHelper
-from startFlask import app, db
+from startFlask import db
 from modules.dal import plein as plein_dal
 
 depense_page = Blueprint('depense_page', __name__, template_folder='templates')
@@ -115,3 +114,46 @@ def list_depense(voiture_id):
         json_data = df.to_json(orient='records')
 
     return jsonify(json_data)
+
+
+@depense_page.route('/show_depense_form')
+def show_depense_form():
+    depense_id = request.values['depense_id']
+
+    if depense_id != '-1':
+        depens = db.session.query(Depense).get(int(depense_id))
+    else:
+        depens = Depense()
+        depens.id = -1
+        depens.jour = datetime.date.today()
+
+    categories = db.session.query(Categorie).all()
+    return render_template(
+        '_depense_form.html', depense=depens, categories=categories
+    )
+
+@depense_page.route('/sauver_depense', methods=['POST'])
+def sauver_depense():
+    try:
+        depense_id = request.values['depense_id']
+
+        if depense_id != '-1':
+            depense = db.session.query(Depense).get(int(depense_id))
+        else:
+            depense = Depense()
+            depense.voiture_id = request.form['voiture_id']
+
+        depense.categorie_id = request.form['categorie_id']
+        depense.jour = DateHelper.str_web_to_date(request.form['jour'])
+        depense.total = request.form['total']
+        depense.kilometrage = request.form['kilometrage']
+        depense.description = request.form['description']
+
+        if depense_id == '-1':
+            db.session.add(depense)
+        db.session.commit()
+
+    except Exception as exc:
+        return ViewHelper.notif_error("Erreur lors de l'enregistrement")
+
+    return ViewHelper.notif_success("Sauvegardé")

@@ -1,0 +1,99 @@
+
+<div class="modal fade" id="depenseModal" tabindex="-1" role="dialog" aria-labelledby="depenseModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="depenseModalLabel">Ajouter une dépense</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-inline" id="depense_form" action=".{{ url_for('depense_page.sauver_depense') }}" method="post">
+          <input type="hidden" id="voiture_id" name="voiture_id" value="{{ depense.voiture_id  }}"/>
+          <input type="hidden" id="depense_id" name="depense_id" value="{{ depense.id }}" />
+          <div class="input-group col-12 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text col-12">Date</span>
+            </div>
+            <input type="date" class="form-control" id="jour" name="jour" value="{{ depense.jour }}" required/>
+          </div>
+
+          <div class="input-group col-12 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text col-12">Catégorie</span>
+            </div>
+            <select id="categorie" name="categorie_id" class="form-control form-control-sm mr-2 ml-2">
+                {% for categorie in categories %}
+                <option value="{{categorie.id}}">{{categorie.nom}}</option>"
+                {% endfor %}
+            </select>
+          </div>
+          <div class="input-group col-12 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Kilométrage</span>
+            </div>
+            <input type="number" class="form-control" id="kilometrage" name="kilometrage" value="{{ depense.kilometrage }}" required/>
+          </div>
+
+          <div class="input-group col-12 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Total</span>
+            </div>
+            <input type="number" class="form-control" id="total" name="total" value="{{ depense.total }}" step="0.001" required/>
+          </div>
+          <div class="input-group col-12 mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Commentaire</span>
+            </div>
+            <textarea class="form-control" id="description" name="description">{{ depense.description }}</textarea>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+        <button type="button" class="btn btn-primary" id="btnEnregistrer">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+$('#btnEnregistrer').on('click', function (event) {
+      event.preventDefault();
+      if ($('#depense_form')[0].checkValidity()) {
+          $('#voiture_id').val($('#voiture').val());
+          $('#depense_form').submit();
+          $('#btnRechercher').click();
+      } else {
+          $.notify({
+              icon: 'glyphicon glyphicon-warning-sign',
+              message: 'Les champs en rouge sont obligatoires'
+          }, {
+              type: 'warning',
+              delay: 5000
+          });
+      }
+    });
+
+function sauver_depense(){
+    voitureId = $('#voiture').val();
+  $.ajax({
+      url: '.{{ url_for("depense_page.sauver_depense", voiture_id=999) }}'.replace('999',voitureId),
+      type: 'POST',
+      success: function (data) {
+        if (!isNullOrEmpty(htdepense)) {
+        } else {
+          creerTableaudepense(JSON.parse(data))
+        }
+      },
+      error: function (data) {
+          alert("Erreur lors de la mise à jour de la liste")
+      },
+      complete: function () { }
+  });
+}
+
+</script>

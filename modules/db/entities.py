@@ -34,21 +34,22 @@ class Plein(Base):
 
 class Categorie(Base):
     __tablename__ = 'categorie'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    nom = Column(String, nullable=False)
+    categorie_id = Column('categorie_id', Integer, primary_key=True, autoincrement=True)
+    categorie = Column(String, nullable=False)
     description = Column(String)
 
 
 class Depense(Base):
     __tablename__ = 'depense'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    depense_id = Column('depense_id', Integer, primary_key=True, autoincrement=True)
     voiture_id = Column(Integer, ForeignKey('voiture.id'))
-    categorie_id = Column(Integer, ForeignKey('categorie.id'))
+    cat_id = Column('cat_id', Integer, ForeignKey('categorie.categorie_id'))
     total = Column(Numeric, nullable=False)
     kilometrage = Column(Integer, nullable=False)
     description = Column(String)
     jour = Column(DateTime, nullable=False)
+    categorie = relationship("Categorie", foreign_keys=[cat_id])
 
 # creation des tables
 Base.metadata.create_all(engine)

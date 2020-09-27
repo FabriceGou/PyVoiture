@@ -9,10 +9,11 @@ import pandas as pd
 import plotly
 from flask import render_template, jsonify, request
 from flask_login import login_required
+from sqlalchemy.orm import joinedload
 
 from modules.dal.plein import get_plein
 from modules.db import AlchemyEncoder, Session, engine
-from modules.db.entities import Voiture,Depense
+from modules.db.entities import Voiture, Depense, Categorie
 from modules.helper import DateHelper
 from startFlask import app, db
 
@@ -101,7 +102,9 @@ def depense():
 
 @app.route('/list_depense/<int:voiture_id>', methods=['POST'])
 def list_depense(voiture_id):
-    query = db.session.query(Depense).filter_by(voiture_id=voiture_id).order_by(Depense.jour)
+    query = db.session.query(Depense)\
+        .options(joinedload(Depense.categorie).load_only(Categorie.categorie))\
+        .filter_by(voiture_id=voiture_id).order_by(Depense.jour)
     df = pd.read_sql(query.statement, engine)
     if df.empty:
         json_data ='{}'

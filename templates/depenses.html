@@ -46,7 +46,7 @@ function getdepenseConfig() {
     { data: 'id', type: 'numeric', readOnly:true },
     { data: 'voiture_id', type: 'numeric', readOnly:true},
     { data: 'jour', type: 'date', dateFormat: 'DD/MM/YYYY HH:mm', readOnly:false},
-    { data: 'categorie_id', type: 'numeric', readOnly:true},
+    { data: 'categorie', type: 'text', readOnly:true},
     { data: 'kilometrage', type: 'numeric', readOnly:true },
     { data: 'total', type: 'numeric', readOnly:true},
     { data: 'description', type: 'text', readOnly:true},
@@ -90,6 +90,23 @@ htdepense = new Handsontable(document.querySelector("#handsontable-depense"), {
 return htdepense;
 }
 
+function chargerForm(depense_id) {
+  $.ajax({
+      url: '.{{ url_for("depense_page.show_depense_form") }}',
+      type: 'GET',
+      data:{
+        depense_id: ''+depense_id, voiture_id: $('#voiture').val()
+      },
+      success: function (html) {
+        $('#parentModalForm').html(html);
+        $('#depenseModal').modal();
+      },
+      error: function (data) {
+        alert("Erreur lors de la création du formulaire")
+      },
+      complete: function () { }
+  });
+}
 
 $( document ).ready(function() {
     charger_depense();
