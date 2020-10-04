@@ -46,14 +46,14 @@ def charger_graph_conso():
     
 
 def make_graph(voiture_id, date_deb, date_fin):
-    df = get_plein(voiture_id, date_deb, date_fin)
+    df = get_plein(voiture_id, date_deb, date_fin, date_format='%Y-%m-%d %H')
     avg = df['litre_100'].mean()
     trace_point = dict(x=df['jour'], y=df['litre_100'], name="", mode="lines")
     layout = dict(
-        title="Consommation {0} L/100 ".format(round(avg,2)),
-        xaxis_title="Dates",
+        title="Consommation {0} L/100 ".format(round(avg, 2)),
+        xaxis=dict(title="Dates", tickformat="%d-%m-%Y", tickangle=0),
         yaxis_title="L/100",
-        margin=dict(l=30, r=30, t=30, b=30),
+        margin=dict(l=30, r=10, t=30, b=30),
         font=dict(
             family="Arial,Helvetica",
             size=11,

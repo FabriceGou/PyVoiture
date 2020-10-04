@@ -13,7 +13,7 @@ def create(plein):
     session.add(plein)
     session.commit()
 
-def get_plein(voiture_id, debut=None, fin=None):
+def get_plein(voiture_id, debut=None, fin=None, date_format='%d-%m-%Y'):
     plein = db.session.query(Plein)
     if debut:
         plein = plein.filter(Plein.jour >= debut)
@@ -27,6 +27,6 @@ def get_plein(voiture_id, debut=None, fin=None):
     if df.empty:
         return df
     else:
-        df['jour'] = df['jour'].dt.strftime('%d/%m/%Y %H:%M')
+        df['jour'] = df['jour'].dt.strftime(date_format)
         df['litre_100'] = 100 * df['anon_1'] / (df['kilometrage'] - df['kilometrage'].shift(1))
     return df
