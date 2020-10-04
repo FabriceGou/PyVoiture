@@ -4,7 +4,6 @@
 Routes and views for the flask application.
 """
 import datetime
-import json
 import pandas as pd
 from flask import render_template, jsonify, request, Blueprint
 
@@ -124,9 +123,8 @@ def show_depense_form():
         depens = db.session.query(Depense).get(int(depense_id))
     else:
         depens = Depense()
-        depens.id = -1
+        depens.depense_id = -1
         depens.jour = datetime.date.today()
-
     categories = db.session.query(Categorie).all()
     return render_template(
         '_depense_form.html', depense=depens, categories=categories
@@ -143,7 +141,7 @@ def sauver_depense():
             depense = Depense()
             depense.voiture_id = request.form['voiture_id']
 
-        depense.categorie_id = request.form['categorie_id']
+        depense.cat_id = request.form['categorie_id']
         depense.jour = DateHelper.str_web_to_date(request.form['jour'])
         depense.total = request.form['total']
         depense.kilometrage = request.form['kilometrage']
@@ -156,4 +154,11 @@ def sauver_depense():
     except Exception as exc:
         return ViewHelper.notif_error("Erreur lors de l'enregistrement")
 
-    return ViewHelper.notif_success("Sauvegardé")
+    return render_template('depenses.html', title='Dépenses')
+
+
+@depense_page.route('/supprimer_depense/<int:id>', methods=['DELETE'])
+def supprimer_depense(id):
+    db.session.query(Depense).filter_by(depense_id=id).delete()
+    db.session.commit()
+    return 'OK'

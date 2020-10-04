@@ -43,15 +43,15 @@ function charger_depense(){
 
 function getdepenseConfig() {
     return [
-    { data: 'id', type: 'numeric', readOnly:true },
+    { data: 'depense_id', type: 'numeric', readOnly:true },
     { data: 'voiture_id', type: 'numeric', readOnly:true},
     { data: 'jour', type: 'date', dateFormat: 'DD/MM/YYYY HH:mm', readOnly:false},
     { data: 'categorie', type: 'text', readOnly:true},
     { data: 'kilometrage', type: 'numeric', readOnly:true },
     { data: 'total', type: 'numeric', readOnly:true},
     { data: 'description', type: 'text', readOnly:true},
-    { data: 'id', renderer: imgModifierRenderer, readOnly:true},
-    { data: 'id', renderer: imgSupprimerRenderer, readOnly:true}
+    { data: 'depense_id', renderer: imgModifierRenderer, readOnly:true},
+    { data: 'depense_id', renderer: imgSupprimerRenderer, readOnly:true}
   ]
 }
 
@@ -90,6 +90,10 @@ htdepense = new Handsontable(document.querySelector("#handsontable-depense"), {
 return htdepense;
 }
 
+function modifier(depense_id, row){
+    chargerForm(depense_id);
+}
+
 function chargerForm(depense_id) {
   $.ajax({
       url: '.{{ url_for("depense_page.show_depense_form") }}',
@@ -106,6 +110,23 @@ function chargerForm(depense_id) {
       },
       complete: function () { }
   });
+}
+
+function supprimer(id, row){
+  jour = htdepense.getDataAtRowProp(row, 'jour');
+  if(confirm('Voulez vous vraiment supprimer la dépense du '+jour))  {
+    $.ajax({
+        url: '.{{ url_for("depense_page.supprimer_depense", id=999) }}'.replace('999',id),
+        type: 'DELETE',
+        success: function (data) {
+          charger_depense()
+        },
+        error: function (data) {
+          alert("Erreur lors de la suppression")
+        },
+        complete: function () { }
+    });
+  }
 }
 
 $( document ).ready(function() {

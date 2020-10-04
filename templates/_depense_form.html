@@ -3,7 +3,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="depenseModalLabel">Ajouter une dépense</h5>
+        <h5 class="modal-title" id="depenseModalLabel">Dépense</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Fermer">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -11,21 +11,21 @@
       <div class="modal-body">
         <form class="form-inline" id="depense_form" action=".{{ url_for('depense_page.sauver_depense') }}" method="post">
           <input type="hidden" id="voiture_id" name="voiture_id" value="{{ depense.voiture_id  }}"/>
-          <input type="hidden" id="depense_id" name="depense_id" value="{{ depense.id }}" />
+          <input type="hidden" id="depense_id" name="depense_id" value="{{ depense.depense_id }}" />
           <div class="input-group col-12 mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text col-12">Date</span>
             </div>
-            <input type="date" class="form-control" id="jour" name="jour" value="{{ depense.jour }}" required/>
+            <input type="date" class="form-control" id="jour" name="jour" value="{{ date_input_str(depense.jour) }}" required/>
           </div>
 
           <div class="input-group col-12 mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text col-12">Catégorie</span>
             </div>
-            <select id="categorie" name="categorie_id" class="form-control form-control-sm mr-2 ml-2">
+            <select id="categorie_id" name="categorie_id" class="form-control form-control-sm mr-2 ml-2">
                 {% for categorie in categories %}
-                <option value="{{categorie.id}}">{{categorie.nom}}</option>"
+                <option value="{{categorie.categorie_id}}" {% if depense.cat_id==categorie.categorie_id %} selected="selected"{% endif %}>{{categorie.categorie}}</option>"
                 {% endfor %}
             </select>
           </div>
@@ -77,23 +77,5 @@ $('#btnEnregistrer').on('click', function (event) {
           });
       }
     });
-
-function sauver_depense(){
-    voitureId = $('#voiture').val();
-  $.ajax({
-      url: '.{{ url_for("depense_page.sauver_depense", voiture_id=999) }}'.replace('999',voitureId),
-      type: 'POST',
-      success: function (data) {
-        if (!isNullOrEmpty(htdepense)) {
-        } else {
-          creerTableaudepense(JSON.parse(data))
-        }
-      },
-      error: function (data) {
-          alert("Erreur lors de la mise à jour de la liste")
-      },
-      complete: function () { }
-  });
-}
 
 </script>
