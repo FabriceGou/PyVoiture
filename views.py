@@ -75,22 +75,6 @@ def list_voiture():
     voitures = Session().query(Voiture).all()
     return dict(voitures=voitures)
 
-
-@app.route('/voiture')
-def voiture():
-    return render_template(
-        'voiture.html',
-        title='Gestion des voitures'
-    )
-
-
-@app.route('/list_voiture', methods=['POST'])
-def list_voiture():
-    res = Session().query(Voiture).all()
-    json_data = AlchemyEncoder.to_json(res)
-    return jsonify(json_data)
-
-
 ############# DEPENSES ###########################
 @app.route('/depense')
 def depense():

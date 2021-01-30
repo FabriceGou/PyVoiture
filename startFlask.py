@@ -46,3 +46,5 @@ from routes.login import auth_bp
 app.register_blueprint(auth_bp)
 from routes.depense import depense_page
 app.register_blueprint(depense_page)
+from routes.voiture import voiture_page
+app.register_blueprint(voiture_page)

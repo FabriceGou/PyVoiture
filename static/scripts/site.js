@@ -1,4 +1,4 @@
-﻿
+﻿const HANSONTABLE_LICENCE = 'non-commercial-and-evaluation';
 // Erreurs ajax
 $(document).ajaxError(function (xhr, props) {
     // expiration de session

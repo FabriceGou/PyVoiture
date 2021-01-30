@@ -1,16 +1,22 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
-Liste des voitures
-<div id="handsontable-voiture"></div>
-
+<div class="row">
+  <div class="col-sm">Liste des voitures</div>
+  <div class="col-sm"><button type="button" class="btn btn-primary btn-sm" id="btnAjouter">Ajouter</button></div>
+</div>
+<div class="row">
+  <div class="col-8">
+    <div style="padding-left:0;" id="handsontable-voiture"></div>
+  </div>
+</div>
+<div id="parentModalForm"/>
 <script>
 var htVoiture;
 
 function charger_voiture(){
   $.ajax({
-      url: '.{{ url_for("list_voiture") }}',
+      url: '.{{ url_for("voiture_page.list_voiture") }}',
       type: 'POST',
       success: function (data) {
         if (!isNullOrEmpty(htVoiture)) {
@@ -30,14 +36,18 @@ function charger_voiture(){
 function getVoitureConfig() {
     return [
     { data: 'id', type: 'numeric', readOnly:true },
-    { data: 'nom',  type: 'text', readOnly:false},
-    { data: 'description', type: 'text', readOnly:false }
+    { data: 'nom',  type: 'text', readOnly:true},
+    { data: 'description', type: 'text', readOnly:true },
+    { data: 'id', renderer: imgModifierRenderer, readOnly:true},
+    { data: 'id', renderer: imgSupprimerRenderer, readOnly:true}
   ]
 }
 
 
 function creerTableauVoiture(jsonData){
 htVoiture = new Handsontable(document.querySelector("#handsontable-voiture"), {
+  width: '90%', 
+  colWidths: [10, 200, 500],autoColumnSize: true,
   //alignement par défaut à droite
   className: "htRight",
   data: jsonData,
@@ -54,11 +64,56 @@ htVoiture = new Handsontable(document.querySelector("#handsontable-voiture"), {
   autoColumnSize : true,
   hiddenColumns: true,
   nestedHeaders: [
-    ['Id', 'Nom', 'Description']
+    ['Id', 'Nom', 'Description', 'Modifier', 'Supprimer']
   ],
-  headerTooltips: { rows: false, columns: true, onlyTrimmed: true }
+  headerTooltips: { rows: false, columns: true, onlyTrimmed: true },
+  licenseKey: HANSONTABLE_LICENCE
 });
 return htVoiture;
+}
+
+$('#btnAjouter').on('click', function (event) {
+  chargerForm(-1);
+});
+
+function modifier(voiture_id, row){
+    chargerForm(voiture_id);
+}
+
+
+function supprimer(id, row){
+  nom = htVoiture.getDataAtRowProp(row, 'nom');
+  if(confirm('Voulez vous vraiment supprimer la voiture '+nom))  {
+    $.ajax({
+        url: '.{{ url_for("voiture_page.supprimer_voiture", voiture_id=999) }}'.replace('999',id),
+        type: 'DELETE',
+        success: function (data) {
+          charger_voiture()
+        },
+        error: function (data) {
+          alert("Erreur lors de la suppression")
+        },
+        complete: function () { }
+    });
+  }
+}
+
+function chargerForm(voiture_id) { //TODO
+  $.ajax({
+      url: '.{{ url_for("voiture_page.show_voiture_form") }}',
+      type: 'GET',
+      data:{
+        voiture_id: ''+voiture_id
+      },
+      success: function (html) {
+        $('#parentModalForm').html(html);
+        $('#voitureModal').modal();
+      },
+      error: function (data) {
+        alert("Erreur lors de la création du formulaire d'ajout")
+      },
+      complete: function () { }
+  });
 }
 
 $( document ).ready(function() {

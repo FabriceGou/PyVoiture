@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
 
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, DATETIME, DateTime
 from sqlalchemy.ext.compiler import compiles
@@ -9,21 +8,22 @@ from modules.db import engine, Base
 
 @compiles(DATETIME, 'sqlite')
 
+
 class Voiture(Base):
     __tablename__ = 'voiture'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    nom = Column(String, nullable=False)
+    nom = Column(String, nullable=False, unique=True)
     description = Column(String)
-    pleins = relationship("Plein", backref="plein", lazy='joined')
-    pleins = relationship("Depense", backref="depense", lazy='joined')
+    pleins = relationship("Plein", backref="voiture", lazy='joined', cascade="all, delete-orphan") #TODO
+    depenses = relationship("Depense", backref="depense", lazy='joined', cascade="all, delete-orphan")
 
 
 class Plein(Base):
     __tablename__ = 'plein'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    voiture_id = Column(Integer, ForeignKey('voiture.id'))
+    voiture_id = Column(Integer, ForeignKey('voiture.id', ondelete='CASCADE'))
     prix_litre = Column(Numeric, nullable=False)
     total = Column(Numeric, nullable=False)
     kilometrage = Column(Integer, nullable=False)

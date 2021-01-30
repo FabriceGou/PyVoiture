@@ -12,7 +12,8 @@
     <script src="{{ url_for('static', filename='handsontable/handsontable.full.js')}}"></script>
     <script src="{{ url_for('static', filename='handsontable/numbro/languages.min.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/plotly-1.15.1.min.js')}}"></script>
-    
+    <script src="{{ url_for('static', filename='scripts/bootstrap.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/site.js')}}"></script>
 </head>
 
 <body style="padding-top:0px">
@@ -32,8 +33,7 @@
 
 
     {% block scripts %}
-    <script src="{{ url_for('static', filename='scripts/bootstrap.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='scripts/site.js')}}"></script>
+
     {% endblock %}
 
 </body>
