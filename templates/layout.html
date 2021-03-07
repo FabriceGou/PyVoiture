@@ -1,8 +1,9 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gestion de voitures - {{ title }}</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='content/bootstrap.min.css')}}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='content/site.css')}}" />
@@ -12,7 +13,7 @@
     <script src="{{ url_for('static', filename='handsontable/handsontable.full.js')}}"></script>
     <script src="{{ url_for('static', filename='handsontable/numbro/languages.min.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/plotly-1.15.1.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='scripts/bootstrap.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/bootstrap.bundle.min.js')}}"></script>
     <script src="{{ url_for('static', filename='scripts/site.js')}}"></script>
 </head>
 
@@ -31,10 +32,8 @@
         </footer>
     </div>
 
-
     {% block scripts %}
 
     {% endblock %}
-
 </body>
 </html>

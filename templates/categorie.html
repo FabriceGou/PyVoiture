@@ -1,0 +1,125 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm">Liste des catégories</div>
+  <div class="col-sm"><button type="button" class="btn btn-primary btn-sm" id="btnAjouter">Ajouter</button></div>
+</div>
+
+<div style="padding-left:0;" id="handsontable-categorie"></div>
+
+<div id="parentModalForm"></div>
+<script>
+var htCategorie;
+
+function charger_categorie(){
+  $.ajax({
+      url: '.{{ url_for("categorie_page.list_categorie") }}',
+      type: 'POST',
+      success: function (data) {
+        if (!isNullOrEmpty(htCategorie)) {
+          htCategorie.loadData(JSON.parse(data));
+          htCategorie.render();
+        } else {
+          creerTableauCategorie(JSON.parse(data))
+        }
+      },
+      error: function (data) {
+          alert("Erreur lors de la mise à jour de la liste")
+      },
+      complete: function () { }
+  });
+}
+
+function getCategorieConfig() {
+    return [
+    { data: 'categorie_id', type: 'numeric', readOnly:true },
+    { data: 'categorie',  type: 'text', readOnly:true},
+    { data: 'description', type: 'text', readOnly:true },
+    { data: 'categorie_id', renderer: imgModifierRenderer, readOnly:true},
+    { data: 'categorie_id', renderer: imgSupprimerRenderer, readOnly:true}
+  ]
+}
+
+
+function creerTableauCategorie(jsonData){
+htCategorie = new Handsontable(document.querySelector("#handsontable-categorie"), {
+  width: '90%', 
+  colWidths: [10, 200, 500],autoColumnSize: true,
+  //alignement par défaut à droite
+  className: "htRight",
+  data: jsonData,
+  columns: getCategorieConfig(),
+  rowHeaders: false,
+  //pour avoir les filtres
+  dropdownMenu: true,
+  filters :true,
+  manualColumnMove: true,
+  manualColumnResize: true,
+  contextMenu: true,
+  multiColumnSorting: true,
+  //pour avoir des colonnes qui s'ajustent automatiquement
+  autoColumnSize : true,
+  hiddenColumns: true,
+  nestedHeaders: [
+    ['Id', 'Catégorie', 'Description', 'Modifier', 'Supprimer']
+  ],
+  headerTooltips: { rows: false, columns: true, onlyTrimmed: true },
+  licenseKey: HANSONTABLE_LICENCE
+});
+return htCategorie;
+}
+
+$('#btnAjouter').on('click', function (event) {
+  chargerForm(-1);
+});
+
+function modifier(categorie_id, row){
+    chargerForm(categorie_id);
+}
+
+
+function supprimer(id, row){
+  nom = htCategorie.getDataAtRowProp(row, 'categorie');
+  if(confirm('Voulez vous vraiment supprimer la categorie '+nom))  {
+    $.ajax({
+        url: '.{{ url_for("categorie_page.supprimer_categorie", categorie_id=999) }}'.replace('999',id),
+        type: 'DELETE',
+        success: function (data) {
+          charger_categorie()
+        },
+        error: function (data) {
+          alert("Erreur lors de la suppression")
+        },
+        complete: function () { }
+    });
+  }
+}
+
+function chargerForm(categorie_id) { //TODO
+  $.ajax({
+      url: '.{{ url_for("categorie_page.show_categorie_form") }}',
+      type: 'GET',
+      data:{
+        categorie_id: ''+categorie_id
+      },
+      success: function (html) {
+        $('#parentModalForm').html(html);
+        var categorieModal = new bootstrap.Modal(document.getElementById('categorieModal'));
+        categorieModal.show();
+      },
+      error: function (data) {
+        alert("Erreur lors de la création du formulaire d'ajout")
+      },
+      complete: function () { }
+  });
+}
+
+$( document ).ready(function() {
+  charger_categorie();
+});
+
+</script>
+
+{% endblock %}
+

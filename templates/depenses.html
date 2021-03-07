@@ -103,7 +103,8 @@ function chargerForm(depense_id) {
       },
       success: function (html) {
         $('#parentModalForm').html(html);
-        $('#depenseModal').modal();
+        var depenseModal = new bootstrap.Modal(document.getElementById('depenseModal'));
+        depenseModal.show();
       },
       error: function (data) {
         alert("Erreur lors de la création du formulaire")

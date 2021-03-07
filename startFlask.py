@@ -48,3 +48,5 @@ from routes.depense import depense_page
 app.register_blueprint(depense_page)
 from routes.voiture import voiture_page
 app.register_blueprint(voiture_page)
+from routes.categorie import categorie_page
+app.register_blueprint(categorie_page)

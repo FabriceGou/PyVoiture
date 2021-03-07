@@ -1,12 +1,11 @@
-<form class="form-inline my-2 my-lg-0">
-    <div class="form-group">
-        <label for="voiture">Voiture</label>
-        <select id="voiture" class="form-control form-control-sm mr-2 ml-2">
-            {% for voiture in voitures %}
-            <option value= "{{voiture.id}}">{{voiture.nom}}</option>"
-            {% endfor %}
-        </select>
-    </div>
-</form>
-<button type="button" id='btnRechercher' class="btn btn-primary btn-sm">Rechercher</button>
+
+   <form class="">
+            <label class="navbar-text" for="voiture">Voiture</label>
+            <select id="voiture" class="form-select select form-select-sm">
+                {% for voiture in voitures %}
+                <option value= "{{voiture.id}}">{{voiture.nom}}</option>"
+                {% endfor %}
+            </select>
+            <button  id='btnRechercher' class="btn btn-outline-success" type="button">Rechercher</button>
+    </form>
 

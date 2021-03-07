@@ -1,36 +1,47 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Gestion des voitures</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <div class="container-fluid">
+        <div class="">
+            <a class="navbar-brand" href="#">Gestion des voitures</a>
+        </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-            <a class="nav-link" href="{{ url_for('home') }}">Accueil <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDepenses" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dépenses
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="{{ url_for('depense_page.carburant') }}">Pleins</a>
-              <a class="dropdown-item" href="{{ url_for('depense') }}">Autres dépenses</a>
+          <div class="flex-grow-1"><!--prend place dispo -->
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('home') }}">Accueil</a>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDepenses" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dépenses
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{{ url_for('depense_page.carburant') }}">Carburant</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('depense') }}">Autres dépenses</a></li>
+              </ul>
+            </li>
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarAdministration" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Administration
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{{ url_for('voiture_page.voiture') }}">Voitures</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('categorie_page.categorie') }}">Catégories de dépenses</a></li>
+                <li><a class="dropdown-item disabled" href="#">Sauvegarde</a></li>
+              </ul>
+            </li>
+            </ul>
             </div>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarAdministration" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Administration
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{{ url_for('voiture_page.voiture') }}">Voitures</a><div class="dropdown-divider"></div>
-                <a class="dropdown-item disabled" href="#">Catégories de dépenses</a>
-                <a class="dropdown-item disabled" href="#">Sauvegarde</a>
-            </div>
-        </li>
-    </ul>
-    {% include "/include/voiture_select.html" %}
-  </div>
+          <div class="d-flex justify-content-end">
+            {% include "/include/voiture_select.html" %}
+          </div>
+
+        </div>
+    </div>
 </nav>
 
 

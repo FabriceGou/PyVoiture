@@ -107,7 +107,8 @@ function chargerForm(voiture_id) { //TODO
       },
       success: function (html) {
         $('#parentModalForm').html(html);
-        $('#voitureModal').modal();
+        var voitureModal = new bootstrap.Modal(document.getElementById('voitureModal'));
+        voitureModal.show();
       },
       error: function (data) {
         alert("Erreur lors de la création du formulaire d'ajout")

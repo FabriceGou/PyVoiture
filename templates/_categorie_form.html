@@ -1,29 +1,27 @@
 
-<div class="modal fade" id="voitureModal" tabindex="-1" role="dialog" aria-labelledby="voitureModalLabel" aria-hidden="true">
+<div class="modal fade" id="categorieModal" tabindex="-1" role="dialog" aria-labelledby="categorieModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="voitureModalLabel">Ajouter une voitue</h5>
-        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Fermer">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="categorieModalLabel">Ajouter une catégorie</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
-      <div class="modal-body">
-        <form class="form-inline" id="add_form" action=".{{ url_for('voiture_page.sauver_voiture') }}" method="post">
-          <input type="hidden" id="voiture_id" name="voiture_id" value="{{ voiture.id  }}"/>
+    </div>
+    <div class="modal-body">
+        <form class="form-inline" id="add_form" action=".{{ url_for('categorie_page.sauver_categorie') }}" method="post">
+          <input type="hidden" id="categorie_id" name="categorie_id" value="{{ categorie.categorie_id }}"/>
           <div class="input-group col-12 mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text">Nom</span>
             </div>
-            <input class="form-control" id="nom" name="nom" value="{{ voiture.nom }}"/>
+            <input class="form-control" id="categorie" name="categorie" value="{{ categorie.categorie }}"/>
           </div>
           <div class="input-group col-12 mb-3">
             <div class="input-group-prepend">
               <span class="input-group-text">Description</span>
             </div>
-            <textarea class="form-control" id="description" name="description">{{ voiture.description }}</textarea>
+            <textarea class="form-control" id="description" name="description">{{ categorie.description }}</textarea>
           </div>
-
         </form>
       </div>
       <div class="modal-footer">
@@ -31,7 +29,6 @@
         <button type="button" class="btn btn-primary" id="btnEnregistrer">Enregistrer</button>
       </div>
     </div>
-  </div>
 </div>
 
 <script>
@@ -39,7 +36,7 @@
 $('#btnEnregistrer').on('click', function (event) {
       event.preventDefault();
       if ($('#add_form')[0].checkValidity()) {
-          $('#voiture_id').val($('#voiture_id').val());
+          $('#categorie_id').val($('#categorie_id').val());
           $('#add_form').submit();
           $('#btnRechercher').click();
       } else {

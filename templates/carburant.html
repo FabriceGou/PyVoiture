@@ -2,7 +2,6 @@
 
 {% block content %}
 
-
 <style>
 .input-group-prepend {
     flex: 0 0 40%;
@@ -11,16 +10,13 @@
     width: 100%;
 }
 </style>
-
-<div id="handsontable-carburant"></div>
-
 <button type="button" class="btn btn-primary" id="btnAjouter">Ajouter</button>
+<div id="handsontable-carburant"></div>
 
 <div id="parentModalForm"/>
 
 <script>
 var htcarburant;
-
 
 function charger_carburant(){
     voitureId = $('#voiture').val();
@@ -123,7 +119,8 @@ function chargerForm(plein_id) {
       },
       success: function (html) {
         $('#parentModalForm').html(html);
-        $('#carburantModal').modal();
+        carburantModal = new bootstrap.Modal(document.getElementById('carburantModal'));
+        carburantModal.show();
       },
       error: function (data) {
         alert("Erreur lors de la création du formulaire d'ajout")
@@ -133,6 +130,7 @@ function chargerForm(plein_id) {
 }
 
 $( document ).ready(function() {
+    let carburantModal;
     charger_carburant();
 
     $('#btnRechercher').click(function() {
@@ -141,6 +139,10 @@ $( document ).ready(function() {
 
     $('#btnAjouter').on('click', function (event) {
       chargerForm(-1);
+    });
+
+    document.getElementById("btnFermer").addEventListener("click", function () {
+        carburantModal.hide();
     });
 });
 
