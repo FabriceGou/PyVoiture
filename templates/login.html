@@ -5,7 +5,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='content/bootstrap.min.css')}}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='content/login.css')}}"/>
     <script src="{{ url_for('static', filename='scripts/jquery-3.4.1.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='scripts/bootstrap.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='scripts/bootstrap.bundle.min.js')}}"></script>
     <!--Fontawesome CDN-->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"
           integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
@@ -18,14 +18,14 @@
                 <h3>Sign In</h3>
                 {% for message in get_flashed_messages() %}
                 <div class="alert alert-warning">
-                    <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    <button type="button" class="close" data-bs-dismiss="alert">&times;</button>
                     {{ message }}
                 </div>
                 {% endfor %}
             </div>
             <div class="card-body">
                 <form method="post" action="/login">
-                    <div class="input-group form-group">
+                    <div class="input-group form-group m-1">
                         <div class="input-group-prepend">
                             {% if form.email.errors %}
                             <ul class="errors">
@@ -34,14 +34,13 @@
                                 {% endfor %}
                             </ul>
                             {% endif %}
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <span class="input-group-text h-100 fas fa-user"></span>
                         </div>
                         <input type="text" name="email" class="form-control" placeholder="email">
-
                     </div>
-                    <div class="input-group form-group">
+                    <div class="input-group form-group m-1">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            <span class="input-group-text h-100 fas fa-key"></span>
                         </div>
                         {% if form.email.errors %}
                         <ul class="errors">
@@ -52,7 +51,8 @@
                         {% endif %}
                         <input type="password" id="password" name="password" class="form-control" placeholder="password">
                     </div>
-                    <div class="form-group">
+
+                    <div class="form-group m-2">
                         <input type="submit" value="Login" class="btn float-right login_btn">
                     </div>
                 </form>
