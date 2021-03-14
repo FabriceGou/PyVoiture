@@ -1,11 +1,15 @@
-
-   <form class="">
-            <label class="navbar-text" for="voiture">Voiture</label>
-            <select id="voiture" class="form-select select form-select-sm">
+<form>
+    <div class="row me-1">
+        <label for="voiture" class="text-white col-2 col-form-label ">Voiture </label>
+        <div class="col-6">
+            <select id="voiture" class="form-select select">
                 {% for voiture in voitures %}
-                <option value= "{{voiture.id}}">{{voiture.nom}}</option>"
+                <option value="{{voiture.id}}">{{voiture.nom}}</option>
                 {% endfor %}
             </select>
-            <button  id='btnRechercher' class="btn btn-outline-success" type="button">Rechercher</button>
-    </form>
-
+        </div>
+        <div class="col-4">
+            <button id='btnRechercher' class="btn btn-outline-success" type="button">Rechercher</button>
+        </div>
+    </div>
+</form>
